@@ -13,6 +13,8 @@ class DefaultImport implements ToCollection, WithHeadingRow
 
     protected ?Closure $collectionMethod = null;
 
+    protected ?Closure $afterValidationMutator = null;
+
     public function __construct(
         public string $model,
         public array $attributes = []
