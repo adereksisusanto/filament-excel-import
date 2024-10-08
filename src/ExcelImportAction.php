@@ -12,7 +12,7 @@ class ExcelImportAction extends Action
         Concerns\HasFormActionHooks,
         Concerns\HasCustomCollectionMethod,
         Concerns\CanCustomiseActionSetup,
-        Filament\Tables\Actions\Concerns\BelongsToTable;
+        \Filament\Tables\Actions\Concerns\BelongsToTable;
 
     protected string $importClass = DefaultImport::class;
 
