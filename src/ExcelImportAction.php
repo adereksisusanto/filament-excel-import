@@ -84,8 +84,13 @@ class ExcelImportAction extends Action
                 $importObject->setCollectionMethod($this->collectionMethod);
             }
 
-            if(method_exists($importObject, 'setAfterValidationMutator' && isset($this->afterValidationMutator))){
-                $importObject->setAfterValidationMutator($this->afterValidationMutator);
+            if(method_exists($importObject, 'setAfterValidationMutator' && 
+               (isset($this->afterValidationMutator) || $this->shouldRetainBeforeValidationMutation)
+            )){
+                $afterValidationMutator = $this->shouldRetainBeforeValidationMutation ? 
+                        $this->beforeValidationMutator :
+                        $this->afterValidationMutator;
+                $importObject->setAfterValidationMutator($afterValidationMutator);
             }
 
             Excel::import($importObject, $data['upload']);

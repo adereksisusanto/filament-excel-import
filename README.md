@@ -251,10 +251,13 @@ In some cases you may want to mutate the data before or after validation, in ord
             'email' => 'required|email',
             'phone' => ['required','numeric'],
         ])
-        ->mutateAfterValidationUsing(function(array $data): array{
-            $data['date'] = $data['date']->format('Y-m-d');
-            return $data;
-        }),
+        ->mutateAfterValidationUsing(
+            closure: function(array $data): array{
+                $data['date'] = $data['date']->format('Y-m-d');
+                return $data;
+            },
+            shouldRetainBeforeValidationMutation: true // if this is set, the mutations will be retained after validation (avoids repetition in/of afterValidation)
+        ),
 
 ```
 

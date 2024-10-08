@@ -22,15 +22,18 @@ trait HasUploadForm
 
     protected ?Closure $beforeValidationMutator = null;
 
+    protected bool $shouldRetainBeforeValidationMutation = false;
+
     protected string | Closure $visibility = 'public';
 
     protected array $validationRules = [];
 
     protected bool $validate = false;
 
-    public function mutateBeforeValidationUsing(Closure $closure): static
+    public function mutateBeforeValidationUsing(Closure $closure, $shouldRetainBeforeValidationMutation = false): static
     {
         $this->beforeValidationMutator = $closure;
+        $this->shouldRetainBeforeValidationMutation = $shouldRetainBeforeValidationMutation;
         return $this;
     }
 
@@ -140,7 +143,7 @@ trait HasUploadForm
                     new ValidationImport(
                         $fail, 
                         $this->validationRules,
-                        $this->afterValidationMutator
+                        $this->beforeValidationMutator
                     ), 
                     $value
                 );
