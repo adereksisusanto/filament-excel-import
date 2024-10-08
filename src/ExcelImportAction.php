@@ -4,7 +4,6 @@ namespace EightyNine\ExcelImport;
 
 use Closure;
 use Filament\Actions\Action;
-use Filament\Forms\Components\FileUpload;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ExcelImportAction extends Action
@@ -12,7 +11,8 @@ class ExcelImportAction extends Action
     use Concerns\HasUploadForm,
         Concerns\HasFormActionHooks,
         Concerns\HasCustomCollectionMethod,
-        Concerns\CanCustomiseActionSetup;
+        Concerns\CanCustomiseActionSetup,
+        Filament\Tables\Actions\Concerns\BelongsToTable;
 
     protected string $importClass = DefaultImport::class;
 
