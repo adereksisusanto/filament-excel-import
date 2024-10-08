@@ -10,6 +10,8 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 class DefaultImport implements ToCollection, WithHeadingRow
 {
     protected array $additionalData = [];
+    
+    protected array $customImportData = [];
 
     protected ?Closure $collectionMethod = null;
 
@@ -24,6 +26,11 @@ class DefaultImport implements ToCollection, WithHeadingRow
     public function setAdditionalData(array $additionalData): void
     {
         $this->additionalData = $additionalData;
+    }
+    
+    public function setCustomImportData(array $customImportData): void
+    {
+        $this->customImportData = $customImportData;
     }
 
     public function setCollectionMethod(Closure $closure): void

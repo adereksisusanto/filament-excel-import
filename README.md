@@ -153,6 +153,14 @@ You can customise the form by using the `beforeUploadField` and `afterUploadFiel
                         'status' => $defaultStatus
                     ]);
 
+                    // When adding the custom import data, the data will be available in
+                    // the custom import as $this->customImport data, when the custom import extends the
+                    // Default import.
+                    $excelImportAction->customImportData([
+                        'other_details' => [ 1, 2, 3, 4],
+                        'age' => 5
+                    ]);
+
                     // Do some other stuff with the data before importing
                 })
                 ,
