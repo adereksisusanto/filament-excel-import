@@ -289,6 +289,45 @@ protected function getHeaderActions(): array
 }
 ```
 
+### Using import action to import relationships
+
+The import action can also be used to import relationships. This is done by using the `DefaultRelationshipImport` class in your relation manager.
+
+```php
+
+use EightyNine\ExcelImport\Tables\ExcelImportRelationshipAction;
+
+
+class PostsRelationManager extends RelationManager
+{
+    protected static string $relationship = 'posts';
+
+    public function table(Table $table): Table
+    {
+        return $table
+            ->recordTitleAttribute('title')
+            ->columns([
+                Tables\Columns\TextColumn::make('title'),
+            ])
+            ->filters([
+                //
+            ])
+            ->headerActions([
+                ExcelImportRelationshipAction::make()
+                    ->slideOver()
+                    ->color('primary')
+                    ->validateUsing([
+                        'title' => 'required',
+                        'body' => 'required',
+                    ]),
+            ]);
+    }
+}
+```
+
+Everything behaves and can be modified similar to the `ExcelImportAction` class, except the `DefaultRelationshipImport` class is used instead of the `DefaultImport` class. So if you are implementing a custom import class, you will need to extend the `DefaultRelationshipImport` class instead of the `DefaultImport` class. 
+
+
 ## Testing
 
 ```bash

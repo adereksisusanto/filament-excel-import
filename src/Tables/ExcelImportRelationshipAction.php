@@ -1,63 +1,18 @@
 <?php
 
-namespace EightyNine\ExcelImport\Concerns;
+namespace EightyNine\ExcelImport\Tables;
 
 use Closure;
-use EightyNine\ExcelImport\DefaultImport;
+use EightyNine\ExcelImport\Concerns\HasExcelImportAction;
+use EightyNine\ExcelImport\DefaultRelationshipImport;
+use Filament\Tables\Actions\Action;
 use Maatwebsite\Excel\Facades\Excel;
 
-trait HasExcelImportAction
+class ExcelImportRelationshipAction extends Action
 {
-    use HasUploadForm,
-        HasFormActionHooks,
-        HasCustomCollectionMethod,
-        CanCustomiseActionSetup,
-        BelongsToTable,
-        HasSampleExcelFile;
+    use HasExcelImportAction;
 
-    protected array $importClassAttributes = [];
-
-    public function use(string $class = null, ...$attributes): static
-    {
-        $this->importClass = $class ?: DefaultImport::class;
-        $this->importClassAttributes = $attributes;
-
-        return $this;
-    }
-
-    public static function getDefaultName(): ?string
-    {
-        return 'import';
-    }
-
-    public function action(Closure | string | null $action): static
-    {
-        if ($action !== 'importData') {
-            throw new \Exception('You\'re unable to override the action for this plugin');
-        }
-
-        $this->action = $this->importData();
-
-        return $this;
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->icon('heroicon-o-arrow-down-tray')
-            ->color('warning')
-            ->form(fn () => $this->getDefaultForm())
-            ->modalIcon('heroicon-o-arrow-down-tray')
-            ->color('success')
-            ->modalWidth('md')
-            ->modalAlignment('center')
-            ->modalHeading(fn ($livewire) => __('Import Excel'))
-            ->modalDescription(__('Import data into database from excel file'))
-            ->modalFooterActionsAlignment('right')
-            ->closeModalByClickingAway(false)
-            ->action('importData');
-    }
+    protected string $importClass = DefaultRelationshipImport::class;
 
     private function importData(): Closure
     {
@@ -65,10 +20,14 @@ trait HasExcelImportAction
             if (is_callable($this->beforeImportClosure)) {
                 call_user_func($this->beforeImportClosure, $data, $livewire, $this);
             }
+
             $importObject = new $this->importClass(
-                method_exists($livewire, 'getModel') ? $livewire->getModel() : null,
+                method_exists($this, 'getModel') ? $this->getModel() : null,
                 $this->importClassAttributes,
-                $this->additionalData
+                $this->additionalData,
+                method_exists($livewire, 'getOwnerRecord') ? $livewire->getOwnerRecord() : null,
+                method_exists($livewire, 'getRelationship') ? $livewire->getRelationship() : null,
+                method_exists($livewire, 'getTable') ? $livewire->getTable() : null
             );
 
             if(method_exists($importObject, 'setAdditionalData') && isset($this->additionalData)) {

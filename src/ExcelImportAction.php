@@ -10,4 +10,6 @@ use Maatwebsite\Excel\Facades\Excel;
 class ExcelImportAction extends Action
 {
     use HasExcelImportAction;
+
+    protected string $importClass = DefaultImport::class;
 }
