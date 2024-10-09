@@ -4,6 +4,7 @@ namespace EightyNine\ExcelImport\Concerns;
 
 use Closure;
 use EightyNine\ExcelImport\ValidationImport;
+use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Field;
 use Filament\Forms\Components\FileUpload;
 use Maatwebsite\Excel\Facades\Excel;
@@ -115,7 +116,7 @@ trait HasUploadForm
 
     protected function getUploadField()
     {
-        return FileUpload::make('upload')
+        $fileUpload = FileUpload::make('upload')
             ->acceptedFileTypes($this->acceptedFileTypes)
             ->label(function ($livewire) {
                 if (!method_exists($livewire, 'getTable')) {
@@ -126,25 +127,32 @@ trait HasUploadForm
             })
             ->default(1)
             ->storeFiles($this->storeFiles)
-            ->disk(fn () => $this->disk ?: (config('excel-import.upload_disk') ?:
+            ->disk(fn() => $this->disk ?: (config('excel-import.upload_disk') ?:
                 config('filesystems.default')))
             ->visibility($this->visibility)
             ->rules($this->validationRules())
             ->columns()
             ->required();
+
+        if (filled($this->sampleData)) {
+            $fileUpload->hintAction(
+                $this->getSampleExcelButton()
+            );
+        }
+        return $fileUpload;
     }
 
     public function validationRules(): array
     {
         $rules = [];
-        if($this->validate) {
-            $rules[] = fn (): Closure => function (string $attribute, $value, Closure $fail) {
+        if ($this->validate) {
+            $rules[] = fn(): Closure => function (string $attribute, $value, Closure $fail) {
                 Excel::import(
                     new ValidationImport(
-                        $fail, 
+                        $fail,
                         $this->validationRules,
                         $this->beforeValidationMutator
-                    ), 
+                    ),
                     $value
                 );
             };

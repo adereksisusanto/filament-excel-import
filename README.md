@@ -261,6 +261,33 @@ In some cases you may want to mutate the data before or after validation, in ord
 
 ```
 
+### Sample Excel File
+You can allow users to download a sample excel file by using the `sampleExcel` method. This method accepts an array of data, a file name, an export class and a sample button label.
+
+```php
+
+use Filament\Forms\Components\Actions\Action;
+
+protected function getHeaderActions(): array
+{
+    return [
+        \EightyNine\ExcelImport\ExcelImportAction::make()
+            ->sampleExcel(
+                sampleData: [
+                    ['name' => 'John Doe', 'email' => 'john@doe.com', 'phone' => '123456789'],
+                    ['name' => 'Jane Doe', 'email' => 'jane@doe.com', 'phone' => '987654321'],
+                ], 
+                fileName: 'sample.xlsx', 
+                exportClass: App\Exports\SampleExport::class, 
+                sampleButtonLabel: 'Download Sample',
+                customiseActionUsing: fn(Action $action) => $action->color('secondary')
+                    ->icon('heroicon-m-clipboard')
+                    ->requiresConfirmation(),
+            ),
+        Actions\CreateAction::make(),
+    ];
+}
+```
 
 ## Testing
 

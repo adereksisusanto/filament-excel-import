@@ -1,11 +1,9 @@
 <?php
 
-namespace EightyNine\ExcelImport;
+namespace EightyNine\ExcelImport\Tables;
 
-use Closure;
 use EightyNine\ExcelImport\Concerns\HasExcelImportAction;
-use Filament\Actions\Action;
-use Maatwebsite\Excel\Facades\Excel;
+use Filament\Tables\Actions\Action;
 
 class ExcelImportAction extends Action
 {
